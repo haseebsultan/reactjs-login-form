@@ -1,19 +1,18 @@
-FROM node:9.4
+#base image
+FROM node
 
-# Create app directory
+# set working directory
+RUN mkdir /usr/src/app
+#copy all files from current directory to docker
+COPY . /usr/src/app
+
 WORKDIR /usr/src/app
 
-# Expose port for service
-EXPOSE 5000
+# add `/usr/src/app/node_modules/.bin` to $PATH
+ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
-# Install and configure `serve`.
-RUN npm install -g serve
+# install and cache app dependencies
+RUN yarn
 
-# Copy source code to image
-COPY . .
-
-# Install dependencies
-RUN npm install
-
-# Build app and start server from script
-CMD ["/usr/src/app/run"]
+# start app
+CMD ["npm", "start"]
